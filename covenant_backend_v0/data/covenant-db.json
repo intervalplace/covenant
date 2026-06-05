@@ -1,0 +1,112 @@
+{
+  "csdSellIntents": [
+    {
+      "intentHash": "0x70bb14cd3bc7fb3b699de1110b8a52397ba093a3a1d03fc9e6d74b6757f937c3",
+      "seller": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+      "sellerUsdcRecipient": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+      "csdGenesisHash": "0x00000052c2821f71b19c3d79dfabfb12d4076ba15d83b47d008e582aad6c0d52",
+      "csdAmount": "100000000",
+      "usdcAmount": "1000000",
+      "createdAt": 1780524184117,
+      "status": "locked_for_settlement",
+      "lockedByIntentHash": "0xf642d6b9edfc53e72fd6c5ef85c7edad406fa0e60f22a238b21cbe238e4ec164",
+      "lockedAt": 1780524281953,
+      "lockExpiresAt": 1780524834453
+    }
+  ],
+  "csdUsdcIntents": [
+    {
+      "intentHash": "0xd30ade337a808ea6b7f18df359cb38a40e05761a51a51a40b2c999666cd6d124",
+      "seller": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+      "authorization": {
+        "buyer": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+        "sellerUsdcRecipient": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+        "sellerCsdScriptHash": "0x65ca851ebecef92058c15689d29bc67c34aacb5590e7b2e3c56a50867a1a8ee2",
+        "csdGenesisHash": "0x00000052c2821f71b19c3d79dfabfb12d4076ba15d83b47d008e582aad6c0d52",
+        "tradeIntentHash": "0x70bb14cd3bc7fb3b699de1110b8a52397ba093a3a1d03fc9e6d74b6757f937c3",
+        "csdAmount": "100000000",
+        "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "usdcAmount": "1000000",
+        "minConfirmations": "1",
+        "validAfter": 1780521883,
+        "validBefore": 1780525543,
+        "nonce": "0xd1c7bd1f96f5e1581dc199eef0dc2f0d43ad255a387b9c9578b41b21c66b2f14"
+      },
+      "authorizationSignature": "0x8ea3eee2c3c39dc81a3df9c4c2a006a1424071670db7a0e53d8d41cb6b1856dc40278ce0b7992d7fe95586cb5ed694826931af9395cc5905ab795a60eabb63711c",
+      "expectedRecipientScriptPubKey": "0xd4da77ed0cfd74ca14ed41e4cb3e43d053ea8d58",
+      "status": "expired_refunded",
+      "createdAt": 1780521947306,
+      "lockTxHash": "0x0df005c42fc1dd5b3f0ed9beea058c2506250962668dbc846c9013b9e8686aa5",
+      "lockedAt": 1780522000700,
+      "lockExpiresAt": 1780522556489,
+      "expiredAt": 1780522556622,
+      "refundTxHash": "0xc77a577cd1a034a5c03200bb3bb4fe3858646241a2e1be85e8763df4788372af"
+    },
+    {
+      "intentHash": "0xbbd8b37f045f2cf06d7f6876edb88eb7f224f40faba90f00894221c8152ffc2b",
+      "seller": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+      "authorization": {
+        "buyer": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+        "sellerUsdcRecipient": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+        "sellerCsdScriptHash": "0x65ca851ebecef92058c15689d29bc67c34aacb5590e7b2e3c56a50867a1a8ee2",
+        "csdGenesisHash": "0x00000052c2821f71b19c3d79dfabfb12d4076ba15d83b47d008e582aad6c0d52",
+        "tradeIntentHash": "0x70bb14cd3bc7fb3b699de1110b8a52397ba093a3a1d03fc9e6d74b6757f937c3",
+        "csdAmount": "100000000",
+        "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "usdcAmount": "1000000",
+        "minConfirmations": "1",
+        "validAfter": 1780522823,
+        "validBefore": 1780526483,
+        "nonce": "0xee2d5c3c5f0b40d64d448a0b98a0f3a4e12f2a3a72630a557ec8eb971dc3c59c"
+      },
+      "authorizationSignature": "0xe45b5fc9db0adf1f633d6f8f65e04668cbcbb449e3838df58825db4b1a0d0f3a1891dafcc5845d234bddcdb3a2b608f2fd8902b405b2a137f22e0113095d2d141b",
+      "expectedRecipientScriptPubKey": "0xd4da77ed0cfd74ca14ed41e4cb3e43d053ea8d58",
+      "status": "settled",
+      "createdAt": 1780522887728,
+      "lockTxHash": "0x061bc5ffc4d5da2ee51ba068ff6562af55bf225c7f82b4f460ced2b2b9652378",
+      "lockedAt": 1780522923018,
+      "lockExpiresAt": 1780523503984,
+      "txHash": "0xfe029a7835319af649487a6fc0492d6bebf288e9b75bd466d66a4ad7331e000b"
+    },
+    {
+      "intentHash": "0xf642d6b9edfc53e72fd6c5ef85c7edad406fa0e60f22a238b21cbe238e4ec164",
+      "seller": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+      "authorization": {
+        "buyer": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+        "sellerUsdcRecipient": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+        "sellerCsdScriptHash": "0x65ca851ebecef92058c15689d29bc67c34aacb5590e7b2e3c56a50867a1a8ee2",
+        "csdGenesisHash": "0x00000052c2821f71b19c3d79dfabfb12d4076ba15d83b47d008e582aad6c0d52",
+        "tradeIntentHash": "0x70bb14cd3bc7fb3b699de1110b8a52397ba093a3a1d03fc9e6d74b6757f937c3",
+        "csdAmount": "100000000",
+        "usdc": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "usdcAmount": "1000000",
+        "minConfirmations": "1",
+        "validAfter": 1780524141,
+        "validBefore": 1780527801,
+        "nonce": "0xc995eaa818fad0688fcd0974da4f35589c3d6033eea39a88769de28b972c273a"
+      },
+      "authorizationSignature": "0x504db1dde8aa128a95cfef95d89ad0d2dbde00fb65bbc698eff1df0b5d9e168e4fc035681b885c92ee1a5c2156c08256020a214fbf23ccf7ce9aea86acecb9f71b",
+      "expectedRecipientScriptPubKey": "0xd4da77ed0cfd74ca14ed41e4cb3e43d053ea8d58",
+      "status": "locked_for_settlement",
+      "createdAt": 1780524206165,
+      "lockTxHash": "0xf11d8f8fd6dbc3081ed92eb3baaf14c1891993d3eeaf6bb173ff9ca47eb3b9b4",
+      "lockedAt": 1780524281953,
+      "lockExpiresAt": 1780524834453
+    }
+  ],
+  "fills": [
+    {
+      "marketId": "CSD-USDC",
+      "fillNonce": "0xbbd8b37f045f2cf06d7f6876edb88eb7f224f40faba90f00894221c8152ffc2b",
+      "baseAmount": "100000000",
+      "quoteAmount": "1000000",
+      "price": "1000000",
+      "status": "settled",
+      "txHash": "0xfe029a7835319af649487a6fc0492d6bebf288e9b75bd466d66a4ad7331e000b",
+      "settledAt": 1780522947959,
+      "csdTxid": "0xbd547adc2b71db88290d61a48c3875dc7720ba03fabab4fd154cb9ee01e7640b",
+      "sellerUsdcRecipient": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD",
+      "buyer": "0x78967F9d1993482122efe6628C3FEdCb6F4938dD"
+    }
+  ]
+}
