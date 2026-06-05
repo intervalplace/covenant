@@ -1,0 +1,233 @@
+{
+  "objects": {
+    "0x28c6e098107dcfc29a217af476f06921ee20a1c25b7a623d167a645190220319": {
+      "objectType": "authorization",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780671900,
+      "creator": "0x0000000000000000000000000000000000000001",
+      "references": [],
+      "payload": {
+        "action": "transfer",
+        "asset": "USDC",
+        "amount": "50",
+        "condition": "100 CSD delivered"
+      },
+      "objectHash": "0x28c6e098107dcfc29a217af476f06921ee20a1c25b7a623d167a645190220319"
+    },
+    "0xb17f696f1f463919482cc8593b9f307e13d4b2c7ce1078262e30b0e28ba1b61d": {
+      "objectType": "condition",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672000,
+      "creator": "0x0000000000000000000000000000000000000001",
+      "references": [
+        "0x28c6e098107dcfc29a217af476f06921ee20a1c25b7a623d167a645190220319"
+      ],
+      "payload": {
+        "conditionType": "delivery_required",
+        "requiredAsset": "CSD",
+        "requiredAmount": "100"
+      },
+      "objectHash": "0xb17f696f1f463919482cc8593b9f307e13d4b2c7ce1078262e30b0e28ba1b61d"
+    },
+    "0x740e12d9d21a551fbf70c65dc506c45451852ad496b0ec2737145c3e0e21a42d": {
+      "objectType": "proof",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672100,
+      "creator": "0x0000000000000000000000000000000000000001",
+      "references": [
+        "0xb17f696f1f463919482cc8593b9f307e13d4b2c7ce1078262e30b0e28ba1b61d"
+      ],
+      "payload": {
+        "proofType": "delivery_observed",
+        "asset": "CSD",
+        "amount": "100",
+        "txid": "test-csd-txid-001",
+        "confirmations": 6
+      },
+      "objectHash": "0x740e12d9d21a551fbf70c65dc506c45451852ad496b0ec2737145c3e0e21a42d"
+    },
+    "0x9e4d4826737ad4738788a8d727c70237fb095a2d6e778abc3404df3954f71811": {
+      "objectType": "receipt",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672200,
+      "creator": "0x0000000000000000000000000000000000000001",
+      "references": [
+        "0x28c6e098107dcfc29a217af476f06921ee20a1c25b7a623d167a645190220319",
+        "0xb17f696f1f463919482cc8593b9f307e13d4b2c7ce1078262e30b0e28ba1b61d",
+        "0x740e12d9d21a551fbf70c65dc506c45451852ad496b0ec2737145c3e0e21a42d"
+      ],
+      "payload": {
+        "receiptType": "authorized_state_transition_completed",
+        "result": "executed",
+        "executedAction": "transfer",
+        "asset": "USDC",
+        "amount": "50",
+        "reason": "100 CSD delivery proof satisfied condition",
+        "executionTx": "test-usdc-transfer-001"
+      },
+      "objectHash": "0x9e4d4826737ad4738788a8d727c70237fb095a2d6e778abc3404df3954f71811"
+    },
+    "0x105e946ee21874e6debf6220eacac2aa795a6390c0f8bd32da16192304e41592": {
+      "objectType": "authorization",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672300,
+      "creator": "0x0000000000000000000000000000000000000002",
+      "references": [],
+      "payload": {
+        "action": "transfer",
+        "asset": "USDC",
+        "amount": "75",
+        "condition": "150 CSD delivered"
+      },
+      "objectHash": "0x105e946ee21874e6debf6220eacac2aa795a6390c0f8bd32da16192304e41592"
+    },
+    "0xc9af45375b6b37ed1bf22cc604edfeff4181cc143cae40b90e8da6e16fb0470e": {
+      "objectType": "condition",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672400,
+      "creator": "0x0000000000000000000000000000000000000002",
+      "references": [
+        "0x105e946ee21874e6debf6220eacac2aa795a6390c0f8bd32da16192304e41592"
+      ],
+      "payload": {
+        "conditionType": "delivery_required",
+        "requiredAsset": "CSD",
+        "requiredAmount": "150"
+      },
+      "objectHash": "0xc9af45375b6b37ed1bf22cc604edfeff4181cc143cae40b90e8da6e16fb0470e"
+    },
+    "0x12ec62d4b9015e97539753e90e93704b407f2052fc0fc42ff742f8c3a47ca999": {
+      "objectType": "proof",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672500,
+      "creator": "0x0000000000000000000000000000000000000002",
+      "references": [
+        "0xc9af45375b6b37ed1bf22cc604edfeff4181cc143cae40b90e8da6e16fb0470e"
+      ],
+      "payload": {
+        "proofType": "delivery_observed",
+        "asset": "CSD",
+        "amount": "150",
+        "txid": "test-csd-txid-002",
+        "confirmations": 6
+      },
+      "objectHash": "0x12ec62d4b9015e97539753e90e93704b407f2052fc0fc42ff742f8c3a47ca999"
+    },
+    "0x461b7968a61c29208a23a665a36f79f6167db4f51eb27f996a85b4543eb74676": {
+      "objectType": "receipt",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780674796767,
+      "creator": "aon-test-executor",
+      "references": [
+        "0x105e946ee21874e6debf6220eacac2aa795a6390c0f8bd32da16192304e41592",
+        "0xc9af45375b6b37ed1bf22cc604edfeff4181cc143cae40b90e8da6e16fb0470e",
+        "0x12ec62d4b9015e97539753e90e93704b407f2052fc0fc42ff742f8c3a47ca999"
+      ],
+      "payload": {
+        "receiptType": "authorized_state_transition_completed",
+        "result": "executed",
+        "executionTx": "test-usdc-transfer-002",
+        "authorizationPayload": {
+          "action": "transfer",
+          "asset": "USDC",
+          "amount": "75",
+          "condition": "150 CSD delivered"
+        },
+        "conditionPayload": {
+          "conditionType": "delivery_required",
+          "requiredAsset": "CSD",
+          "requiredAmount": "150"
+        },
+        "proofPayload": {
+          "proofType": "delivery_observed",
+          "asset": "CSD",
+          "amount": "150",
+          "txid": "test-csd-txid-002",
+          "confirmations": 6
+        }
+      },
+      "objectHash": "0x461b7968a61c29208a23a665a36f79f6167db4f51eb27f996a85b4543eb74676"
+    },
+    "0xe836c44fde317a6f91ba59d4a7128392a44cd73da5c87e692e14dd843d68e9c2": {
+      "objectType": "authorization",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780684250,
+      "creator": "0x0000000000000000000000000000000000000002",
+      "references": [],
+      "payload": {
+        "action": "transfer",
+        "asset": "USDC",
+        "amount": "75",
+        "condition": "150 CSD delivered"
+      },
+      "objectHash": "0xe836c44fde317a6f91ba59d4a7128392a44cd73da5c87e692e14dd843d68e9c2"
+    },
+    "0xc1a19fe0fd0486aa7d197cbad0f973a29da8933f13bb60f303ee2597422d58f5": {
+      "objectType": "condition",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672400,
+      "creator": "0x0000000000000000000000000000000000000002",
+      "references": [
+        "0xe836c44fde317a6f91ba59d4a7128392a44cd73da5c87e692e14dd843d68e9c2"
+      ],
+      "payload": {
+        "conditionType": "delivery_required",
+        "requiredAsset": "CSD",
+        "requiredAmount": "150"
+      },
+      "objectHash": "0xc1a19fe0fd0486aa7d197cbad0f973a29da8933f13bb60f303ee2597422d58f5"
+    },
+    "0x6d3232b8a5377d9b49a72fb32a5c1ae671b0463f36231fe63c1e6f32edebe9d1": {
+      "objectType": "proof",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780672500,
+      "creator": "0x0000000000000000000000000000000000000002",
+      "references": [
+        "0xc1a19fe0fd0486aa7d197cbad0f973a29da8933f13bb60f303ee2597422d58f5"
+      ],
+      "payload": {
+        "proofType": "delivery_observed",
+        "asset": "CSD",
+        "amount": "150",
+        "txid": "test-csd-txid-002",
+        "confirmations": 6
+      },
+      "objectHash": "0x6d3232b8a5377d9b49a72fb32a5c1ae671b0463f36231fe63c1e6f32edebe9d1"
+    },
+    "0xbf7bb0e8fa20b7cb372e1c11d06265466daca4433fece703657a3d8671773876": {
+      "objectType": "receipt",
+      "schemaVersion": "1",
+      "namespace": "aon:test",
+      "createdAt": 1780684377255,
+      "creator": "aon-test-executor",
+      "references": [
+        "0xe836c44fde317a6f91ba59d4a7128392a44cd73da5c87e692e14dd843d68e9c2",
+        "0xc1a19fe0fd0486aa7d197cbad0f973a29da8933f13bb60f303ee2597422d58f5",
+        "0x6d3232b8a5377d9b49a72fb32a5c1ae671b0463f36231fe63c1e6f32edebe9d1"
+      ],
+      "payload": {
+        "receiptType": "authorized_state_transition_completed",
+        "result": "executed",
+        "executionTx": "test-usdc-transfer-002",
+        "summary": null,
+        "verification": {
+          "ok": true,
+          "skipped": true,
+          "reason": "NOT_CSD_PAYMENT_PROOF"
+        }
+      },
+      "objectHash": "0xbf7bb0e8fa20b7cb372e1c11d06265466daca4433fece703657a3d8671773876"
+    }
+  }
+}
