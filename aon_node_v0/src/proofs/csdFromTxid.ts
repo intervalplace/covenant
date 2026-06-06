@@ -1,8 +1,7 @@
-import type { AonObject } from "../object.js";
-import { finalizeObject } from "../object.js";
+import { putObject } from "../store.js";
 
 export async function fetchCsdProofByTxid(txid: string) {
-  const base = process.env.CSD_RPC_URL ?? "http://141.94.163.242:8888";
+  const base = process.env.CSD_RPC_URL ?? "http://127.0.0.1:8887";
   const res = await fetch(`${base}/proof/tx/${txid}`);
 
   if (!res.ok) {
@@ -22,12 +21,15 @@ export async function makeCsdPaymentProofObject(args: {
 }) {
   const proof = await fetchCsdProofByTxid(args.txid);
 
-  return finalizeObject({
-    type: "proof",
-    namespace: "csd",
-    proofType: "csd_payment",
-    refs: [args.conditionHash],
+  return {
+    objectType: "proof",
+    schemaVersion: "1",
+    namespace: "aon:csd-usdc",
+    createdAt: Date.now(),
+    creator: "aon-node-v0",
+    references: [args.conditionHash],
     payload: {
+      proofType: "csd_payment",
       txid: args.txid,
       proof,
       expectedRecipientScriptPubKey: args.expectedRecipientScriptPubKey,
@@ -35,9 +37,8 @@ export async function makeCsdPaymentProofObject(args: {
         args.expectedAmount !== undefined
           ? String(args.expectedAmount)
           : undefined,
-      minConfirmations: args.minConfirmations ?? 6,
+      minConfirmations: args.minConfirmations ?? 1,
       expectedIntentHash: args.expectedIntentHash,
     },
-    createdAt: Date.now(),
-  } as any);
+  };
 }

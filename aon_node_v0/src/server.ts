@@ -21,7 +21,21 @@ app.get("/v1/health", async () => ({
 app.post("/v1/objects", async (req, reply) => {
   try {
     const obj = await putObject(req.body as any);
-    return { ok: true, object: obj };
+    const objectHash = (obj as any).objectHash ?? (obj as any).hash;
+
+    if (!objectHash) {
+      return reply.code(500).send({
+        ok: false,
+        error: { code: "OBJECT_HASH_MISSING" },
+        object: obj,
+      });
+    }
+
+    return {
+      ok: true,
+      objectHash,
+      object: obj,
+    };
   } catch (err: any) {
     return reply.code(400).send({
       ok: false,
@@ -31,7 +45,6 @@ app.post("/v1/objects", async (req, reply) => {
     });
   }
 });
-
 app.get("/v1/objects/:hash", async (req, reply) => {
   const hash = (req.params as any).hash;
   const obj = getObject(hash);
@@ -161,6 +174,35 @@ if (!proof.references.map((r) => r.toLowerCase()).includes(conditionHash.toLower
 
 }
 
+const existingReceipts = listObjects({
+  objectType: "receipt",
+  namespace: auth.namespace,
+});
+
+const conditionAlreadyReceipted = existingReceipts.some((r: any) =>
+  r.references?.map((x: string) => x.toLowerCase()).includes(conditionHash.toLowerCase())
+);
+
+if (conditionAlreadyReceipted) {
+  return reply.code(409).send({
+    ok: false,
+    error: { code: "CONDITION_ALREADY_CONSUMED" },
+  });
+}
+
+const proofTxid = proof.payload?.txid ?? proof.payload?.proof?.txid;
+
+const txidAlreadyReceipted = existingReceipts.some((r: any) =>
+  r.payload?.verification?.txid?.toLowerCase?.() === proofTxid?.toLowerCase?.()
+);
+
+if (proofTxid && txidAlreadyReceipted) {
+  return reply.code(409).send({
+    ok: false,
+    error: { code: "PROOF_TXID_ALREADY_CONSUMED" },
+  });
+}
+
 const verification = verifyCsdProofObject(condition, proof);
 
 const receipt: AonObject = {
@@ -216,13 +258,23 @@ app.post("/v1/proofs/csd/from-txid", async (req, reply) => {
       expectedIntentHash: body.expectedIntentHash,
     });
 
-    await putObject(obj);
 
-    return {
-      ok: true,
-      hash: obj.hash,
-      object: obj,
-    };
+const saved = await putObject(obj);
+const objectHash = (saved as any).objectHash ?? (saved as any).hash;
+
+if (!objectHash) {
+  return reply.code(500).send({
+    ok: false,
+    error: { code: "PROOF_OBJECT_HASH_MISSING" },
+    object: saved,
+  });
+}
+
+return {
+  ok: true,
+  objectHash,
+  object: saved,
+};
   } catch (err: any) {
     return reply.code(400).send({
       ok: false,
