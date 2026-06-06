@@ -1,0 +1,43 @@
+{
+  "objects": {
+    "0x54f9c7deff2a90bcc961c7309222cb1aa3670486bf09fd7cf1fcc90d452b3499": {
+      "objectType": "authorization",
+      "schemaVersion": "1",
+      "namespace": "aon:p2p-test",
+      "createdAt": 1780779449,
+      "creator": "0x0000000000000000000000000000000000000001",
+      "references": [],
+      "payload": {
+        "kind": "p2p_test",
+        "message": "first libp2p AON object"
+      },
+      "objectHash": "0x54f9c7deff2a90bcc961c7309222cb1aa3670486bf09fd7cf1fcc90d452b3499"
+    },
+    "0x6e96bbf7395d8d77fb934d2549d1ff58d0727d73bdc4bd0d4fb765f3859e4ae7": {
+      "objectType": "authorization",
+      "schemaVersion": "1",
+      "namespace": "aon:p2p-test",
+      "createdAt": 1780779710,
+      "creator": "0x0000000000000000000000000000000000000001",
+      "references": [],
+      "payload": {
+        "kind": "p2p_test",
+        "message": "second libp2p AON object"
+      },
+      "objectHash": "0x6e96bbf7395d8d77fb934d2549d1ff58d0727d73bdc4bd0d4fb765f3859e4ae7"
+    },
+    "0x1be2d140946031dde396d6feb219932f6f6931ba24859d1c780ad4510c5c7cd3": {
+      "objectType": "authorization",
+      "schemaVersion": "1",
+      "namespace": "aon:p2p-test",
+      "createdAt": 1780779935,
+      "creator": "0x0000000000000000000000000000000000000001",
+      "references": [],
+      "payload": {
+        "kind": "p2p_test",
+        "message": "second libp2p AON object"
+      },
+      "objectHash": "0x1be2d140946031dde396d6feb219932f6f6931ba24859d1c780ad4510c5c7cd3"
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import "./polyfills.js";
 import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
@@ -8,6 +9,14 @@ import { findExecutableGraphs } from "./executable.js";
 import { finalizeObject, AonObject } from "./object.js";
 import { makeCsdPaymentProofObject } from "./proofs/csdFromTxid.js";
 import { verifyCsdProofObject } from "./verifiers/csd.js";
+import {
+  announceObject,
+  dialPeer,
+  getP2pInfo,
+  requestObjectFromPeer,
+  startP2p,
+} from "./p2p.js";
+
 
 const app = Fastify({ logger: true });
 
@@ -425,4 +434,37 @@ app.post("/v1/p2p/dial", async (req, reply) => {
   }
 });
 
+
+app.post("/v1/p2p/request-object", async (req, reply) => {
+  try {
+    const body = req.body as any;
+
+    if (!body.peerId) {
+      return reply.code(400).send({
+        ok: false,
+        error: { code: "MISSING_PEER_ID" },
+      });
+    }
+
+    if (!body.objectHash) {
+      return reply.code(400).send({
+        ok: false,
+        error: { code: "MISSING_OBJECT_HASH" },
+      });
+    }
+
+    const object = await requestObjectFromPeer(body.peerId, body.objectHash);
+
+    return {
+      ok: true,
+      objectHash: object.objectHash,
+      object,
+    };
+  } catch (err: any) {
+    return reply.code(400).send({
+      ok: false,
+      error: { code: err?.message ?? "P2P_REQUEST_OBJECT_FAILED" },
+    });
+  }
+});
 await app.listen({ port, host: "0.0.0.0" });

@@ -53,7 +53,7 @@ async function readStreamToBytes(source: any): Promise<Uint8Array> {
 async function fetchObjectFromPeer(peerId: any, objectHash: string) {
   if (!node) throw new Error("P2P_NOT_STARTED");
 
-  const stream = await node.dialProtocol(peerId, OBJECT_PROTOCOL);
+  const { stream } = await node.dialProtocol(peerId, OBJECT_PROTOCOL);
 
   const responseBytes = await pipe(
     [jsonBytes({ objectHash })],
@@ -75,6 +75,11 @@ async function handleAnnouncement(msg: any) {
   try {
     const data = parseJsonBytes(msg.detail.data);
     const objectHash = data.objectHash as string;
+
+console.log("[p2p] received announcement", {
+  objectHash,
+  from: msg.detail.from?.toString?.(),
+});
 
     if (!objectHash) return;
     if (getObject(objectHash)) return;
@@ -123,27 +128,23 @@ export async function startP2p() {
     },
   });
 
-  await node.handle(OBJECT_PROTOCOL, async ({ stream }) => {
-    try {
-      await pipe(
-        stream,
-        async (source) => {
-          const req = parseJsonBytes(await readStreamToBytes(source));
-          const objectHash = req.objectHash as string;
-          const object = objectHash ? getObject(objectHash) : null;
+await node.handle(OBJECT_PROTOCOL, async ({ stream }) => {
+  try {
+    const reqBytes = await readStreamToBytes(stream.source);
+    const req = parseJsonBytes(reqBytes);
 
-          if (!object) {
-            return [jsonBytes({ ok: false, error: { code: "OBJECT_NOT_FOUND" } })];
-          }
+    const objectHash = req.objectHash as string;
+    const object = objectHash ? getObject(objectHash) : null;
 
-          return [jsonBytes({ ok: true, object })];
-        },
-        stream
-      );
-    } catch (err) {
-      console.error("[p2p] object request failed", err);
-    }
-  });
+    const response = object
+      ? { ok: true, object }
+      : { ok: false, error: { code: "OBJECT_NOT_FOUND" } };
+
+    await pipe([jsonBytes(response)], stream.sink);
+  } catch (err) {
+    console.error("[p2p] object request failed", err);
+  }
+});
 
   node.services.pubsub.addEventListener("message", handleAnnouncement);
   await node.services.pubsub.subscribe(TOPIC);
@@ -158,7 +159,7 @@ export async function startP2p() {
 
 export async function announceObject(obj: AonObject) {
   if (!node || !obj.objectHash) return;
-
+console.log("[p2p] announcing object", obj.objectHash);
   await node.services.pubsub.publish(
     TOPIC,
     jsonBytes({
@@ -184,6 +185,18 @@ export function getP2pInfo() {
     multiaddrs: node.getMultiaddrs().map((a) => a.toString()),
     peers: node.getPeers().map((p) => p.toString()),
   };
+}
+
+export async function requestObjectFromPeer(peerIdString: string, objectHash: string) {
+  if (!node) throw new Error("P2P_NOT_STARTED");
+
+  const peer = node.getPeers().find((p) => p.toString() === peerIdString);
+
+  if (!peer) {
+    throw new Error("PEER_NOT_CONNECTED");
+  }
+
+  return await fetchObjectFromPeer(peer, objectHash);
 }
 
 export async function dialPeer(addr: string) {
