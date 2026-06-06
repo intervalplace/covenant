@@ -2,6 +2,7 @@ import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { loadStore, putObject, getObject, listObjects } from "./store.js";
+import { announceObject, dialPeer, getP2pInfo, startP2p } from "./p2p.js";
 import { getInboundReferences, getGraph } from "./refs.js";
 import { findExecutableGraphs } from "./executable.js";
 import { finalizeObject, AonObject } from "./object.js";
@@ -12,6 +13,8 @@ const app = Fastify({ logger: true });
 
 await app.register(cors, { origin: true });
 await loadStore();
+await startP2p();
+
 
 app.get("/v1/health", async () => ({
   ok: true,
@@ -30,6 +33,9 @@ app.post("/v1/objects", async (req, reply) => {
         object: obj,
       });
     }
+
+
+await announceObject(obj);
 
     return {
       ok: true,
@@ -95,12 +101,64 @@ app.get("/v1/graphs/:hash", async (req) => {
   };
 });
 
-app.get("/v1/executable", async () => {
+app.get("/v1/executable", async (req) => {
+  const q = req.query as any;
   const objects = listObjects();
 
   return {
     ok: true,
-    executable: findExecutableGraphs(objects),
+    executable: findExecutableGraphs(objects, {
+      namespace: q.namespace,
+      includeCompleted: q.includeCompleted === "true",
+    }),
+  };
+});
+
+app.get("/v1/receipts/by-condition/:conditionHash", async (req) => {
+  const conditionHash = ((req.params as any).conditionHash as string).toLowerCase();
+
+  const receipts = listObjects({
+    objectType: "receipt",
+  }).filter((r: any) =>
+    r.references?.map((x: string) => x.toLowerCase()).includes(conditionHash)
+  );
+
+  return {
+    ok: true,
+    conditionHash,
+    receipts,
+  };
+});
+
+app.get("/v1/receipts/by-proof/:proofHash", async (req) => {
+  const proofHash = ((req.params as any).proofHash as string).toLowerCase();
+
+  const receipts = listObjects({
+    objectType: "receipt",
+  }).filter((r: any) =>
+    r.references?.map((x: string) => x.toLowerCase()).includes(proofHash)
+  );
+
+  return {
+    ok: true,
+    proofHash,
+    receipts,
+  };
+});
+
+app.get("/v1/receipts/by-txid/:txid", async (req) => {
+  const txid = ((req.params as any).txid as string).toLowerCase();
+
+  const receipts = listObjects({
+    objectType: "receipt",
+  }).filter((r: any) =>
+    r.payload?.verification?.txid?.toLowerCase?.() === txid
+  );
+
+  return {
+    ok: true,
+    txid,
+    receipts,
   };
 });
 
@@ -222,13 +280,60 @@ const receipt: AonObject = {
 };
     const saved = await putObject(receipt);
 
-    return { ok: true, receipt: saved };
+await announceObject(saved);
+
+return {
+  ok: true,
+  objectHash: saved.objectHash,
+  receipt: saved,
+};
   } catch (err: any) {
     return reply.code(400).send({
       ok: false,
       error: { code: err?.message ?? "RECEIPT_CREATION_FAILED" },
     });
   }
+});
+
+
+app.get("/v1/receipts/canonical/by-condition/:conditionHash", async (req) => {
+  const conditionHash = ((req.params as any).conditionHash as string).toLowerCase();
+
+  const receipts = listObjects({
+    objectType: "receipt",
+  })
+    .filter((r: any) =>
+      r.references?.map((x: string) => x.toLowerCase()).includes(conditionHash)
+    )
+    .sort((a: any, b: any) => Number(a.createdAt ?? 0) - Number(b.createdAt ?? 0));
+
+  return {
+    ok: true,
+    conditionHash,
+    canonical: receipts[0] ?? null,
+    duplicateCount: Math.max(0, receipts.length - 1),
+    allReceiptHashes: receipts.map((r: any) => r.objectHash),
+  };
+});
+
+app.get("/v1/receipts/canonical/by-txid/:txid", async (req) => {
+  const txid = ((req.params as any).txid as string).toLowerCase();
+
+  const receipts = listObjects({
+    objectType: "receipt",
+  })
+    .filter((r: any) =>
+      r.payload?.verification?.txid?.toLowerCase?.() === txid
+    )
+    .sort((a: any, b: any) => Number(a.createdAt ?? 0) - Number(b.createdAt ?? 0));
+
+  return {
+    ok: true,
+    txid,
+    canonical: receipts[0] ?? null,
+    duplicateCount: Math.max(0, receipts.length - 1),
+    allReceiptHashes: receipts.map((r: any) => r.objectHash),
+  };
 });
 
 app.post("/v1/proofs/csd/from-txid", async (req, reply) => {
@@ -270,6 +375,8 @@ if (!objectHash) {
   });
 }
 
+await announceObject(saved);
+
 return {
   ok: true,
   objectHash,
@@ -285,5 +392,37 @@ return {
   }
 });
 
+
+app.get("/v1/p2p/info", async () => {
+  return {
+    ok: true,
+    p2p: getP2pInfo(),
+  };
+});
+
+app.post("/v1/p2p/dial", async (req, reply) => {
+  try {
+    const body = req.body as any;
+
+    if (!body.addr) {
+      return reply.code(400).send({
+        ok: false,
+        error: { code: "MISSING_MULTIADDR" },
+      });
+    }
+
+    const p2p = await dialPeer(body.addr);
+
+    return {
+      ok: true,
+      p2p,
+    };
+  } catch (err: any) {
+    return reply.code(400).send({
+      ok: false,
+      error: { code: err?.message ?? "P2P_DIAL_FAILED" },
+    });
+  }
+});
 
 await app.listen({ port, host: "0.0.0.0" });
