@@ -3,10 +3,9 @@ import "dotenv/config";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { loadStore, putObject, getObject, listObjects } from "./store.js";
-import { announceObject, dialPeer, getP2pInfo, startP2p } from "./p2p.js";
 import { getInboundReferences, getGraph } from "./refs.js";
 import { findExecutableGraphs } from "./executable.js";
-import { finalizeObject, AonObject } from "./object.js";
+import type { AonObject } from "./object.js";
 import { makeCsdPaymentProofObject } from "./proofs/csdFromTxid.js";
 import { verifyCsdProofObject } from "./verifiers/csd.js";
 import {

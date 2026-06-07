@@ -7,6 +7,7 @@ import { bootstrap } from "@libp2p/bootstrap";
 import { identify } from "@libp2p/identify";
 import { fromString, toString } from "uint8arrays";
 import { multiaddr } from "@multiformats/multiaddr";
+import { byteStream } from "it-byte-stream";
 import { getObject, putObject } from "./store.js";
 import type { AonObject } from "./object.js";
 
@@ -35,74 +36,24 @@ function objectSummary(obj: AonObject) {
 }
 
 
-function chunkToBytes(chunk: any): Uint8Array {
-  if (chunk instanceof Uint8Array) return chunk;
-  if (chunk?.subarray) return chunk.subarray();
-  if (chunk?.slice) return chunk.slice();
-  return new Uint8Array(chunk);
-}
 
-async function readJsonFromStream(stream: any, timeoutMs = 10_000): Promise<any> {
-  const iterator = stream[Symbol.asyncIterator]();
-
-  let out = new Uint8Array();
-  const deadline = Date.now() + timeoutMs;
-
-  while (Date.now() < deadline) {
-    const remaining = Math.max(1, deadline - Date.now());
-
-    const result = await Promise.race([
-      iterator.next(),
-      new Promise<any>((_, reject) =>
-        setTimeout(() => reject(new Error("P2P_READ_TIMEOUT")), remaining)
-      ),
-    ]);
-
-    if (result.done) break;
-
-    const bytes = chunkToBytes(result.value);
-    const next = new Uint8Array(out.length + bytes.length);
-    next.set(out, 0);
-    next.set(bytes, out.length);
-    out = next;
-
-    try {
-      return JSON.parse(toString(out));
-    } catch {
-      // message may be split; keep reading
-    }
-  }
-
-  throw new Error("P2P_JSON_MESSAGE_INCOMPLETE");
-}
-
-async function fetchObjectFromPeer(peerId: any, objectHash: string) {
-  if (!node) throw new Error("P2P_NOT_STARTED");
-
-  console.log("[p2p] fetching object from peer", {
-    peerId: peerId.toString?.() ?? String(peerId),
-    objectHash,
-  });
 
   const stream: any = await node.dialProtocol(peerId, OBJECT_PROTOCOL);
 
-  await stream.send(jsonBytes({ objectHash }));
+  console.log("[p2p] stream diagnostic", {
+    constructor: stream?.constructor?.name,
+    ownKeys: Object.keys(stream ?? {}),
+    protoKeys: Object.getOwnPropertyNames(Object.getPrototypeOf(stream ?? {})),
+    hasSend: typeof stream?.send,
+    hasWrite: typeof stream?.write,
+    hasRead: typeof stream?.read,
+    hasClose: typeof stream?.close,
+    hasCloseWrite: typeof stream?.closeWrite,
+    hasAbort: typeof stream?.abort,
+    asyncIterator: typeof stream?.[Symbol.asyncIterator],
+  });
 
-  if (typeof stream.sendCloseWrite === "function") {
-    stream.sendCloseWrite();
-  }
-
-const response = await readJsonFromStream(stream);
-
-  if (!response.ok || !response.object) {
-    throw new Error(response?.error?.code ?? "P2P_OBJECT_FETCH_FAILED");
-  }
-
-  const saved = await putObject(response.object);
-
-  console.log("[p2p] stored fetched object", saved.objectHash);
-
-  return saved;
+  throw new Error("STOP_AFTER_STREAM_DIAGNOSTIC");
 }
 
 async function handleAnnouncement(msg: any) {
@@ -164,7 +115,14 @@ export async function startP2p() {
 
 await node.handle(OBJECT_PROTOCOL, async ({ stream }) => {
   try {
-const req = await readJsonFromStream(stream);
+    const bs = byteStream(stream);
+
+    const reqBytes = await bs.read({
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    const req = parseJsonBytes(reqBytes.subarray());
+
     const objectHash = req.objectHash as string;
     const object = objectHash ? getObject(objectHash) : null;
 
@@ -177,15 +135,7 @@ const req = await readJsonFromStream(stream);
       ? { ok: true, object }
       : { ok: false, error: { code: "OBJECT_NOT_FOUND" } };
 
-    await (stream as any).send(jsonBytes(response));
-
-if (typeof (stream as any).close === "function") {
-  await (stream as any).close();
-}
-
-    if (typeof (stream as any).sendCloseWrite === "function") {
-      (stream as any).sendCloseWrite();
-    }
+    await bs.write(jsonBytes(response));
   } catch (err) {
     console.error("[p2p] object request failed", err);
   }
